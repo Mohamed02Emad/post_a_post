@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.postapost.data.models.Post
 import com.example.postapost.data.repositories.PostsRepository
 import com.example.postapost.globalUse.isInternetAvailable
+import com.example.postapost.globalUse.logIt
+import com.example.postapost.globalUse.showToast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
