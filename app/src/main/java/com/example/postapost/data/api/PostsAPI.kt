@@ -20,7 +20,8 @@ interface PostsAPI {
         @Url endpoint: String,
     ): Response<GetPostResponse>
 
+    @Headers("Content-Type: application/json")
     @POST(POST_A_POST)
-    suspend fun ShareAPost(): Response<Post>
+    suspend fun shareAPost(@Body post: Post): Response<Post>
 
 }

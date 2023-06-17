@@ -17,7 +17,7 @@ class PostsRepository(val context: Context) {
     suspend fun searchForPost(query: String) =
         RetrofitInstance.api.searchForPosts(SEARCH_POST + query)
 
-    suspend fun postAPost() = RetrofitInstance.api.ShareAPost()
+    suspend fun postAPost(post: Post) = RetrofitInstance.api.shareAPost(post)
 
 
 }

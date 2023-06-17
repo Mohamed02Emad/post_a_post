@@ -40,9 +40,6 @@ class PostFragment : DialogFragment() {
     }
 
     private fun setOnClicks() {
-        binding.btnBack.setOnClickListener {
-            findNavController().navigateUp()
-        }
 
         binding.btnShare.setOnClickListener {
             val title = if (binding.editTextTitle.text.toString().isNotEmpty()) {

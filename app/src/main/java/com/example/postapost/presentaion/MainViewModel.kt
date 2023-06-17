@@ -23,7 +23,7 @@ class MainViewModel @Inject constructor(
     val posts: LiveData<RequestState<GetPostResponse>> = _posts
     var postsResponse: GetPostResponse? = null
 
-    var postUpdated: MutableLiveData<Post?> = MutableLiveData(null)
+    var postUpdated: MutableLiveData<Response<Post>?> = MutableLiveData(null)
 
     init {
         if (isInternetAvailable(repository.context))
@@ -43,8 +43,9 @@ class MainViewModel @Inject constructor(
 
     fun sharePost(title: String, body: String, tagsList: List<String>) =
         viewModelScope.launch {
-            repository.postAPost()
-            postUpdated.value = Post(body, 0, 0, emptyList(), title, 0)
+            val post = Post(body, 31, 15, tagsList, title, 45)
+            val response = repository.postAPost(post)
+            postUpdated.value = if (response.isSuccessful) response else null
         }
 
     private fun handlePostsResponse(response: Response<GetPostResponse>): RequestState<GetPostResponse> {

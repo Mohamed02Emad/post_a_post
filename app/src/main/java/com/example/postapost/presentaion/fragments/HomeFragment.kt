@@ -91,7 +91,6 @@ class HomeFragment : Fragment() {
                     hideProgressbar()
                     response.data?.let {
                         myAdapter.differ.submitList(it.posts.toList())
-                        showToast(requireContext(),myAdapter.itemCount.toString())
                     }
                 }
                 is RequestState.Error -> {
@@ -109,10 +108,11 @@ class HomeFragment : Fragment() {
         }
 
         viewModel.postUpdated.observe(viewLifecycleOwner) {
-            it?.let { post ->
-                showToast(requireContext(), "new post ${post.title}")
-//                myAdapter.list.add(post)
-//                myAdapter.notifyItemInserted(myAdapter.itemCount)
+            it?.let { response ->
+                showToast(requireContext(), "new post ${response.body()!!.title}")
+                val newList = myAdapter.differ.currentList.toMutableList()
+                newList.add(response.body())
+                myAdapter.differ.submitList(newList.toList())
             }
         }
     }
