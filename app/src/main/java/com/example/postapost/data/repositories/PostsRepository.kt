@@ -1,10 +1,17 @@
 package com.example.postapost.data.repositories
 
 import android.content.Context
+import com.example.postapost.data.api.RetrofitInstance
+import com.example.postapost.data.models.GetPostResponse
 import com.example.postapost.data.models.Post
+import retrofit2.Response
 
 class PostsRepository(val context: Context) {
 
+
+    suspend fun getAllPosts(): Response<GetPostResponse>{
+        return RetrofitInstance.api.getAllPosts()
+    }
 
     fun getFakePosts(): ArrayList<Post> {
         val post1 = Post(

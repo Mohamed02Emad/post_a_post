@@ -1,12 +1,14 @@
 package com.example.postapost.presentaion.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.postapost.data.api.RequestState
 import com.example.postapost.databinding.FragmentHomeBinding
 import com.example.postapost.presentaion.MainActivity
 import com.example.postapost.presentaion.MainViewModel
@@ -52,35 +54,30 @@ class HomeFragment : Fragment() {
     }
 
     private fun setObservers() {
-//        viewModel.posts.observe(viewLifecycleOwner) { response ->
-//            when (response) {
-//                is Resource.Sucess -> {
-//                    hideProgressbar()
-//                    response.data?.let {
-//                        myAdapter.differ.submitList(it.articles.toList())
-//                        val totalPages = it.totalResults / 20 + 2   // 20 is page size
-//                        isLastPage = viewModel.breakingNewsPage == totalPages
-//                        if (isLastPage){
-//                            binding.rvBreakingNews.setPadding(0, 0, 0, 40)
-//                        }
-//                    }
-//                }
-//                is Resource.Error -> {
-//                    hideProgressbar()
-//                    response.message?.let {
-//                        Log.d("mohamed", "an error occurred ${it}")
-//                    }
-//                }
-//                is Resource.Loading -> {
-//                    showProgressbar()
-//                }
-//            }
-//
-//        }
+        viewModel.posts.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is RequestState.Sucess -> {
+                    // hideProgressbar()
+                    response.data?.let {
+                        myAdapter.differ.submitList(it.posts.toList())
+                    }
+                }
+                is RequestState.Error -> {
+                    // hideProgressbar()
+                    response.message?.let {
+                        Log.d("mohamed", "an error occurred ${it}")
+                    }
+                }
+                is RequestState.Loading -> {
+                    //   showProgressbar()
+                }
+                else -> {
 
-        viewModel.posts.observe(viewLifecycleOwner) { posts ->
-            myAdapter.differ.submitList(posts)
+                }
+            }
+
         }
+
     }
 
 
