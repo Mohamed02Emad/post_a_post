@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.postapost.data.api.RequestState
 import com.example.postapost.data.models.GetPostResponse
+import com.example.postapost.data.models.Post
 import com.example.postapost.data.repositories.PostsRepository
 import com.example.postapost.globalUse.isInternetAvailable
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,11 +23,7 @@ class MainViewModel @Inject constructor(
     val posts: LiveData<RequestState<GetPostResponse>> = _posts
     var postsResponse: GetPostResponse? = null
 
-
-//    private val _posts: MutableLiveData<ArrayList<Post>> = MutableLiveData()
-//    val posts: LiveData<ArrayList<Post>> = _posts
-//    var postsResponse: ArrayList<Post>? = null
-
+    var postUpdated: MutableLiveData<Post?> = MutableLiveData(null)
 
     init {
         if (isInternetAvailable(repository.context))
@@ -39,26 +36,32 @@ class MainViewModel @Inject constructor(
     }
 
 
+    fun searchForPosts(query: String) = viewModelScope.launch {
+        val response = repository.searchForPost(query)
+        _posts.postValue(handlePostsResponse(response))
+    }
+
+    fun sharePost(title: String, body: String, tagsList: List<String>) =
+        viewModelScope.launch {
+            repository.postAPost()
+            postUpdated.value = Post(body, 0, 0, emptyList(), title, 0)
+        }
+
     private fun handlePostsResponse(response: Response<GetPostResponse>): RequestState<GetPostResponse> {
         if (response.isSuccessful) {
             response.body()?.let { result ->
                 if (postsResponse == null) {
                     postsResponse = result
                 } else {
-                    val oldArticles = postsResponse?.posts
-                    val newArticles = result.posts
-                    oldArticles?.addAll(newArticles)
+//                    val oldArticles = postsResponse?.posts
+//                    val newArticles = result.posts
+//                    oldArticles?.addAll(newArticles)
+                    postsResponse = result
                 }
                 return RequestState.Sucess(postsResponse ?: result)
             }
         }
         return RequestState.Error(response.message())
     }
-
-     fun searchForPosts(query: String) = viewModelScope.launch {
-         val response = repository.searchForPost(query)
-         _posts.postValue(handlePostsResponse(response))
-     }
-
 
 }

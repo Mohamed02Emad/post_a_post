@@ -7,17 +7,21 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.findNavController
 import com.example.postapost.databinding.FragmentPostBinding
+import com.example.postapost.presentaion.MainActivity
+import com.example.postapost.presentaion.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PostFragment : DialogFragment() {
 
     private lateinit var binding: FragmentPostBinding
+    private lateinit var viewModel: MainViewModel
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentPostBinding.inflate(layoutInflater)
+        viewModel = (activity as MainActivity).viewModel
         return binding.root
     }
 
@@ -25,7 +29,6 @@ class PostFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         setDimensions()
         setOnClicks()
-
     }
 
     private fun setDimensions() {
@@ -40,6 +43,29 @@ class PostFragment : DialogFragment() {
         binding.btnBack.setOnClickListener {
             findNavController().navigateUp()
         }
+
+        binding.btnShare.setOnClickListener {
+            val title = if (binding.editTextTitle.text.toString().isNotEmpty()) {
+                binding.editTextTitle.text.toString()
+            } else {
+                "Empty title"
+            }
+            val body = if (binding.editTextBody.text.toString().isNotEmpty()) {
+                binding.editTextBody.text.toString()
+            } else {
+                "empty body"
+            }
+            val tagsList = if (binding.editTextTitle.text.toString().isNotEmpty()) {
+                binding.editTextTitle.text.toString().split(" ")
+            } else {
+                emptyList()
+            }
+
+            viewModel.sharePost(title, body, tagsList)
+            findNavController().navigateUp()
+
+        }
+
     }
 
 }
