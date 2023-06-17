@@ -44,7 +44,7 @@ class PostsAdapter() : RecyclerView.Adapter<PostsAdapter.PostsViewHolder>() {
             postBody.text = post.body
             var tags = ""
             for (i in post.tags) {
-                tags += i + " "
+                tags += "#$i "
             }
             tags.trimEnd()
             postTags.text = tags
