@@ -37,8 +37,6 @@ class PostsAdapter() : RecyclerView.Adapter<PostsAdapter.PostsViewHolder>() {
             )
         )
     }
-
-
     override fun onBindViewHolder(holder: PostsAdapter.PostsViewHolder, position: Int) {
         val post = differ.currentList[position]
         holder.binding.apply {
@@ -54,7 +52,6 @@ class PostsAdapter() : RecyclerView.Adapter<PostsAdapter.PostsViewHolder>() {
         }
 
     }
-
     override fun getItemCount(): Int {
         return differ.currentList.size
     }

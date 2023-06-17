@@ -35,11 +35,11 @@ class MainViewModel @Inject constructor(
 
     fun getAllPosts() = viewModelScope.launch {
         val response = repository.getAllPosts()
-        _posts.postValue(handleBreakingNewsResponse(response))
+        _posts.postValue(handlePostsResponse(response))
     }
 
 
-    private fun handleBreakingNewsResponse(response: Response<GetPostResponse>): RequestState<GetPostResponse> {
+    private fun handlePostsResponse(response: Response<GetPostResponse>): RequestState<GetPostResponse> {
         if (response.isSuccessful) {
             response.body()?.let { result ->
                 if (postsResponse == null) {
@@ -54,6 +54,11 @@ class MainViewModel @Inject constructor(
         }
         return RequestState.Error(response.message())
     }
+
+     fun searchForPosts(query: String) = viewModelScope.launch {
+         val response = repository.searchForPost(query)
+         _posts.postValue(handlePostsResponse(response))
+     }
 
 
 }
