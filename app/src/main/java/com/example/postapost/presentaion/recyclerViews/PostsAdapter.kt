@@ -37,8 +37,6 @@ class PostsAdapter() : RecyclerView.Adapter<PostsAdapter.PostsViewHolder>() {
             )
         )
     }
-
-
     override fun onBindViewHolder(holder: PostsAdapter.PostsViewHolder, position: Int) {
         val post = differ.currentList[position]
         holder.binding.apply {
@@ -46,7 +44,7 @@ class PostsAdapter() : RecyclerView.Adapter<PostsAdapter.PostsViewHolder>() {
             postBody.text = post.body
             var tags = ""
             for (i in post.tags) {
-                tags += i + " "
+                tags += "#$i "
             }
             tags.trimEnd()
             postTags.text = tags
@@ -54,7 +52,6 @@ class PostsAdapter() : RecyclerView.Adapter<PostsAdapter.PostsViewHolder>() {
         }
 
     }
-
     override fun getItemCount(): Int {
         return differ.currentList.size
     }
