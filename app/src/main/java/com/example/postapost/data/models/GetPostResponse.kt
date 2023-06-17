@@ -5,7 +5,7 @@ import androidx.annotation.Keep
 @Keep
 data class GetPostResponse(
     val limit: Int,
-    val posts: List<Post>,
+    val posts: MutableList<Post>,
     val skip: Int,
     val total: Int
 )

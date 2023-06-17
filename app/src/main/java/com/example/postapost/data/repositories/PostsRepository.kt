@@ -1,8 +1,9 @@
 package com.example.postapost.data.repositories
 
+import android.content.Context
 import com.example.postapost.data.models.Post
 
-class PostsRepository {
+class PostsRepository(val context: Context) {
 
 
     fun getFakePosts(): ArrayList<Post> {
