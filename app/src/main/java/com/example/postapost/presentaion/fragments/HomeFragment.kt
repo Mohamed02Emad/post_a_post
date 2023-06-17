@@ -10,7 +10,9 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.postapost.data.api.RequestState
+import com.example.postapost.data.models.Post
 import com.example.postapost.databinding.FragmentHomeBinding
+import com.example.postapost.globalUse.isInternetAvailable
 import com.example.postapost.globalUse.showToast
 import com.example.postapost.presentaion.MainActivity
 import com.example.postapost.presentaion.MainViewModel
@@ -47,21 +49,29 @@ class HomeFragment : Fragment() {
 
     private fun setOnClicks() {
         binding.btnAddPost.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToPostFragment())
+            if (isInternetAvailable(requireContext())) {
+                findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToPostFragment())
+            } else {
+                showToast(requireContext(), "Not Internet")
+            }
         }
 
         var job: Job? = null
         binding.etSearchField.doAfterTextChanged { editable ->
-            job?.cancel()
-            job = MainScope().launch {
-                delay(500)
-                editable?.let {
-                    if (editable.toString().isNotEmpty()) {
-                        viewModel.searchForPosts(editable.toString())
-                    }else{
-                        viewModel.getAllPosts()
+            if (isInternetAvailable(requireContext())) {
+                job?.cancel()
+                job = MainScope().launch {
+                    delay(500)
+                    editable?.let {
+                        if (editable.toString().isNotEmpty()) {
+                            viewModel.searchForPosts(editable.toString())
+                        } else {
+                            viewModel.getAllPosts()
+                        }
                     }
                 }
+            } else {
+                showToast(requireContext(), "Not Internet")
             }
         }
     }
@@ -76,26 +86,33 @@ class HomeFragment : Fragment() {
 
     private fun setObservers() {
         viewModel.posts.observe(viewLifecycleOwner) { response ->
-
             when (response) {
                 is RequestState.Sucess -> {
-                     hideProgressbar()
+                    hideProgressbar()
                     response.data?.let {
                         myAdapter.differ.submitList(it.posts.toList())
-                        showToast(requireContext(),myAdapter.itemCount.toString())
                     }
                 }
                 is RequestState.Error -> {
-                     hideProgressbar()
+                    hideProgressbar()
                     response.message?.let {
                         Log.d("mohamed", "an error occurred ${it}")
                     }
                 }
                 is RequestState.Loading -> {
-                       showProgressbar()
+                    showProgressbar()
                 }
                 else -> {
                 }
+            }
+        }
+
+        viewModel.postUpdated.observe(viewLifecycleOwner) {
+            it?.let { response ->
+                showToast(requireContext(), "new post ${response.body()!!.title}")
+                val newList = myAdapter.differ.currentList.toMutableList()
+                newList.add(response.body())
+                myAdapter.differ.submitList(newList.toList())
             }
         }
     }
